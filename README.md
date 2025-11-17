@@ -3,3 +3,5 @@
 Bienvenidos a la documentacion de L3ttro, una web dirigida por:
 
 #### Sergio Cubero
+
+#### Antonio Sillero
