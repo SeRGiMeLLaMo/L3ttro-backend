@@ -2,20 +2,25 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-  protected $fillable = [
+    protected $fillable = [
         'name',
+        'username',
+        'description',
         'email',
         'password',
+        'rol',
+        'photo',
+        'follows',
+        'stories',
+        'follow_button',
     ];
 
     protected $hidden = [
@@ -23,10 +28,22 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    /**
+     * The attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'stories' => 'boolean',
+            'follow_button' => 'boolean',
+            'password' => 'hashed',
+        ];
+    }
 
+    // Relaciones
     public function stories()
     {
         return $this->hasMany(Story::class);

@@ -14,10 +14,16 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('username')->unique();
+            $table->text('description')->nullable();
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->rememberToken();
+            $table->string('rol')->default('user');
+            $table->string('photo')->nullable();
+            // relaciones sociales / estado
+            $table->integer('follows')->default(0);
+            $table->boolean('stories')->default(false);
+            $table->boolean('follow_button')->default(true);
             $table->timestamps();
         });
 
