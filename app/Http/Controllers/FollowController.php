@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Follow;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FollowController extends Controller
 {
@@ -14,7 +15,7 @@ class FollowController extends Controller
         ]);
 
         $follow = Follow::where('story_id', $request->story_id)
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->first();
 
         if ($follow) {
@@ -24,7 +25,7 @@ class FollowController extends Controller
 
         Follow::create([
             'story_id' => $request->story_id,
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
         ]);
 
         return ['following' => true];
