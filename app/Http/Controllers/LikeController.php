@@ -48,3 +48,4 @@ class LikeController extends Controller
         return response()->json(['liked' => true]);
     }
 }
+
