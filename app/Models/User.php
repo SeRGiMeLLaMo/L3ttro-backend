@@ -10,11 +10,6 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'username',
@@ -28,11 +23,6 @@ class User extends Authenticatable
         'follow_button',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
@@ -51,5 +41,26 @@ class User extends Authenticatable
             'follow_button' => 'boolean',
             'password' => 'hashed',
         ];
+    }
+
+    // Relaciones
+    public function stories()
+    {
+        return $this->hasMany(Story::class);
+    }
+
+    public function follows()
+    {
+        return $this->hasMany(Follow::class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }
