@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Story;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class StoryController extends Controller
 {
@@ -22,7 +23,7 @@ class StoryController extends Controller
 
         return Story::create([
             ...$validated,
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
         ]);
     }
 
