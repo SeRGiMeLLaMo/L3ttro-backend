@@ -8,7 +8,7 @@ class Follow extends Model
 {
     protected $fillable = [
         'user_id',
-        'story_id'
+        'story_id',
     ];
 
     public function user()
