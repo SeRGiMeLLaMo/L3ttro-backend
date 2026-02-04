@@ -16,24 +16,23 @@ class CommentController extends Controller
 
     public function store(Request $request)
     {
-        // Validación de los datos
+        if (!Auth::check()) {
+            return response()->json(['error' => 'No autenticado'], 401);
+        }
+
         $validated = $request->validate([
             'story_id' => 'nullable|exists:stories,id',
             'chapter_id' => 'nullable|exists:chapters,id',
             'content' => 'required|string',
         ]);
 
-        // Creamos el comentario asignando el user_id automáticamente
         $comment = Comment::create([
-            'user_id' => Auth::id(),
+            'content' => $validated['content'],
             'story_id' => $validated['story_id'] ?? null,
             'chapter_id' => $validated['chapter_id'] ?? null,
-            'content' => $validated['content'],
+            'user_id' => Auth::id(), // 👈 usuario autenticado
         ]);
 
-        return response()->json([
-            'message' => 'Comentario creado exitosamente',
-            'comment' => $comment
-        ], 201);
+        return response()->json($comment, 201);
     }
 }

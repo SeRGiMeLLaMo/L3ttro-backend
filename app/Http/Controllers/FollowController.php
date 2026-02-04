@@ -1,15 +1,18 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Models\Follow;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 
 class FollowController extends Controller
 {
     public function toggle(Request $request)
     {
+        if (!Auth::check()) {
+            return response()->json(['error' => 'No autenticado'], 401);
+        }
+
         $request->validate([
             'story_id' => 'required|exists:stories,id',
         ]);
@@ -20,14 +23,14 @@ class FollowController extends Controller
 
         if ($follow) {
             $follow->delete();
-            return ['following' => false];
+            return response()->json(['following' => false]);
         }
 
         Follow::create([
             'story_id' => $request->story_id,
-            'user_id' => Auth::id(),
+            'user_id', Auth::id(),
         ]);
 
-        return ['following' => true];
+        return response()->json(['following' => true]);
     }
 }
