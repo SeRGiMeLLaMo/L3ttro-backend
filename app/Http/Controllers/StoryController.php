@@ -16,15 +16,17 @@ class StoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required',
-            'description' => 'nullable',
-            'genre_id' => 'required|exists:genres,id',
+            'title' => 'required |string|max:100',
+            'description' => 'nullable|string',
+            'genre_id' => 'required|array',
+            'genre_id.*' => 'exists:genres,id',
         ]);
 
         return Story::create([
             ...$validated,
-            'user_id' => Auth::id(),
+            'user_id'=> 1,
         ]);
+        $story->genres()->sync($request->genre_id);
     }
 
     public function show(Story $story)
