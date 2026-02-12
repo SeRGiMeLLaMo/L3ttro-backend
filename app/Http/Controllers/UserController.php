@@ -62,10 +62,11 @@ class UserController extends Controller
     public function update(Request $request)
     {
         $user = Auth::user();
-0
+
         if (!$user) {
             return response()->json(['error' => 'No autenticado'], 401);
         }
+        dd(get_class($user)); // Esto te dirá qué tipo de objeto es $user. Si $user es null, entonces update() obviamente no existe → error.
 
     $validated = $request->validate([
         'name' => 'sometimes|required|string|max:255',
