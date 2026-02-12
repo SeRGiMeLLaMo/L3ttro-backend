@@ -11,7 +11,7 @@ class LikeController extends Controller
     // Aseguramos que solo usuarios autenticados puedan usar este método
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth:sanctum');
     }
 
     public function toggle(Request $request)

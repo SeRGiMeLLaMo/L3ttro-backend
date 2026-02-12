@@ -12,7 +12,7 @@ class UserController extends Controller
     // Perfil del usuario autenticado
     public function me()
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         if (!$user) {
             return response()->json(['error' => 'No autenticado'], 401);
@@ -61,8 +61,8 @@ class UserController extends Controller
     // Actualizar perfil
     public function update(Request $request)
     {
-        $user = auth()->user();
-
+        $user = Auth::user();
+0
         if (!$user) {
             return response()->json(['error' => 'No autenticado'], 401);
         }
