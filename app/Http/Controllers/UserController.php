@@ -59,14 +59,13 @@ class UserController extends Controller
     }
 
     // Actualizar perfil
-   public function update(Request $request)
-{
-    /** @var \App\Models\User $user */
-    $user = Auth::user();
-
-    if (!$user) {
-        return response()->json(['error' => 'No autenticado'], 401);
-    }
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+0
+        if (!$user) {
+            return response()->json(['error' => 'No autenticado'], 401);
+        }
 
     $validated = $request->validate([
         'name' => 'sometimes|required|string|max:255',

@@ -28,7 +28,7 @@ class FollowController extends Controller
 
         Follow::create([
             'story_id' => $request->story_id,
-            'user_id', Auth::id(),
+            'user_id' => Auth::id(),
         ]);
 
         return response()->json(['following' => true]);
