@@ -10,7 +10,7 @@ use App\Http\Controllers\{
     FollowController
 };
 
-Route::middleware('auth:sanctum')->group(function () {
+//Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [UserController::class, 'me']);
     Route::put('/me', [UserController::class, 'update']);
     Route::delete('/me', [UserController::class, 'destroy']);
@@ -40,4 +40,4 @@ Route::middleware('auth:sanctum')->group(function () {
     // Likes & Follow
         Route::post('/likes/toggle', [LikeController::class, 'toggle']);
         Route::post('/follows/toggle', [FollowController::class, 'toggle']);
-});
+//});
