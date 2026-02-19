@@ -20,13 +20,19 @@ class StoryController extends Controller
             'description' => 'nullable|string',
             'genre_id' => 'required|array',
             'genre_id.*' => 'exists:genres,id',
+            'cover_image' => 'nullable|string'
         ]);
 
-        return Story::create([
-            ...$validated,
-            'user_id'=> 1,
+        $story = Story::create([
+            'title' => $validated['title'],
+            'description' => $validated['description'] ?? '',
+            'user_id' => 1 //Usuario fijo por ahora, luego se cambiará por Auth::id()
         ]);
-        $story->genres()->sync($request->genre_id);
+
+ // Relacionar géneros
+    $story->genres()->sync($validated['genre_id']);
+
+    return $story->load('author', 'genres');
     }
 
     public function show(Story $story)

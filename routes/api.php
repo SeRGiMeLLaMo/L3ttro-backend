@@ -22,7 +22,7 @@ Route::get('/users/{user}/comments', [UserController::class, 'comments']);
 Route::get('/chapters/{chapter}', [ChapterController::class, 'show']);
 
 // Rutas protegidas por Sanctum (requieren usuario autenticado)
-Route::middleware('auth:sanctum')->group(function () {
+//Route::middleware('auth:sanctum')->group(function () {
     // Perfil propio
     Route::get('/me', [UserController::class, 'me']);
     Route::put('/me', [UserController::class, 'update']);
@@ -46,4 +46,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Comments
     Route::post('/comments', [CommentController::class, 'store']);
-});
+//});
