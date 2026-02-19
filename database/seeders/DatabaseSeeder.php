@@ -16,5 +16,12 @@ class DatabaseSeeder extends Seeder
         $this->call([
             GenreSeeder::class,
         ]);
+
+        // Crear usuarios de prueba
+        $this->call([
+            UserSeeder::class,
+        ]);
+
+
     }
 }

@@ -12,7 +12,6 @@ return new class extends Migration {
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('cover_image')->nullable();
-            $table->foreignId('genre_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

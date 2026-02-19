@@ -9,8 +9,8 @@ class Story extends Model
     protected $fillable = [
         'title',
         'description',
-        'genre_id',
         'user_id',
+        'cover_image',
     ];
 
     public function author()
@@ -18,8 +18,8 @@ class Story extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function genre()
+    public function genres()
     {
-        return $this->belongsToMany(Genre::class);
+        return $this->belongsToMany(Genre::class, 'genre_story'); // tabla pivote: genre_story
     }
 }
