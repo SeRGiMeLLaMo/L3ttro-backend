@@ -10,7 +10,10 @@ class StoryController extends Controller
 {
     public function index()
     {
-        return Story::with('author', 'genre')->get();
+        // Historias más recientes primero
+        return Story::with('author', 'genres')
+            ->latest()
+            ->get();
     }
 
     public function store(Request $request)
@@ -18,26 +21,35 @@ class StoryController extends Controller
         $validated = $request->validate([
             'title' => 'required |string|max:100',
             'description' => 'nullable|string',
-            'genre_id' => 'required|array',
+            // Géneros opcionales, se pueden enviar como genre_id[] en el formulario
+            'genre_id' => 'nullable|array',
             'genre_id.*' => 'exists:genres,id',
-            'cover_image' => 'nullable|string'
+            // La portada se envía como archivo (FormData), no como string
+            'cover_image' => 'nullable|file|image|max:2048',
         ]);
+
+        // Guardar imagen si viene
+        $coverPath = null;
+        if ($request->hasFile('cover_image')) {
+            $coverPath = $request->file('cover_image')->store('covers', 'public');
+        }
 
         $story = Story::create([
             'title' => $validated['title'],
             'description' => $validated['description'] ?? '',
-            'user_id' => 1 //Usuario fijo por ahora, luego se cambiará por Auth::id()
+            'user_id' => 1, // Usuario fijo por ahora, luego se cambiará por Auth::id()
+            'cover_image' => $coverPath,
         ]);
 
- // Relacionar géneros
-    $story->genres()->sync($validated['genre_id']);
+        // Relacionar géneros (si se enviaron)
+        $story->genres()->sync($validated['genre_id'] ?? []);
 
-    return $story->load('author', 'genres');
+        return $story->load('author', 'genres');
     }
 
     public function show(Story $story)
     {
-        return $story->load('author', 'genre', 'chapters');
+        return $story->load('author', 'genres', 'chapters');
     }
 
     public function update(Request $request, Story $story)

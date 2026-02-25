@@ -22,4 +22,9 @@ class Story extends Model
     {
         return $this->belongsToMany(Genre::class, 'genre_story'); // tabla pivote: genre_story
     }
+
+    public function chapters()
+    {
+        return $this->hasMany(Chapter::class);
+    }
 }
