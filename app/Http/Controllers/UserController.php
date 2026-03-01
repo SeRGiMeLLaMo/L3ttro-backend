@@ -19,7 +19,7 @@ class UserController extends Controller
     }
 
     return User::with([
-        'stories.genre',
+        'stories.genres',
         'stories.author',
     ])->findOrFail($user->id);
     }
@@ -28,10 +28,9 @@ class UserController extends Controller
     public function show(User $user)
     {
         return $user->load([
-            'stories.genre',
+            'stories.genres',
             'stories.author',
             'stories.chapters',
-            'followers',
         ]);
     }
 
@@ -39,7 +38,7 @@ class UserController extends Controller
     public function stories(User $user)
     {
         return $user->stories()
-            ->with(['genre', 'author'])
+            ->with(['genres', 'author'])
             ->get();
     }
 
@@ -47,7 +46,7 @@ class UserController extends Controller
     public function follows(User $user)
     {
         return $user->follows()
-            ->with('story.genre')
+            ->with('story.genres')
             ->get()
             ->pluck('story');
     }
