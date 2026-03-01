@@ -30,6 +30,8 @@ class UserController extends Controller
         return $user->load([
             'stories.genre',
             'stories.author',
+            'stories.chapters',
+            'followers',
         ]);
     }
 
