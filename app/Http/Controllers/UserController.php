@@ -28,10 +28,13 @@ class UserController extends Controller
     public function show(User $user)
     {
         return $user->load([
+            'stories' => function ($q) {
+                $q->withCount('likes');
+            },
             'stories.genres',
             'stories.author',
             'stories.chapters',
-        ]);
+        ])->loadCount('followers');
     }
 
     // Stories creadas por el usuario

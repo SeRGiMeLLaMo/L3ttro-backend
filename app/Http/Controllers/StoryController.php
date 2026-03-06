@@ -8,12 +8,50 @@ use Illuminate\Support\Facades\Auth;
 
 class StoryController extends Controller
 {
-    public function index()
+    public function __construct()
     {
-        // Historias más recientes primero
-        return Story::with('author', 'genres')
-            ->latest()
-            ->get();
+        $this->middleware('auth:sanctum')->only(['store', 'update', 'destroy']);
+    }
+    public function index(Request $request)
+    {
+        $query = Story::query()
+            ->with(['author', 'genres'])
+            ->withCount('likes');
+
+        $search = $request->query('q');
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhereHas('author', function ($qa) use ($search) {
+                      $qa->where('username', 'like', "%{$search}%")
+                         ->orWhere('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $genreIds = $request->query('genres', []);
+        if (is_array($genreIds) && count($genreIds) > 0) {
+            $query->whereHas('genres', function ($q) use ($genreIds) {
+                $q->whereIn('genres.id', $genreIds);
+            });
+        }
+
+        $sort = $request->query('sort', 'newest'); // newest|oldest|alpha_asc|alpha_desc
+        switch ($sort) {
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'alpha_asc':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'alpha_desc':
+                $query->orderBy('title', 'desc');
+                break;
+            default:
+                $query->orderBy('created_at', 'desc');
+        }
+
+        return $query->get();
     }
 
     public function store(Request $request)
@@ -37,7 +75,7 @@ class StoryController extends Controller
         $story = Story::create([
             'title' => $validated['title'],
             'description' => $validated['description'] ?? '',
-            'user_id' => 1, // Usuario fijo por ahora, luego se cambiará por Auth::id()
+            'user_id' => Auth::id(),
             'cover_image' => $coverPath,
         ]);
 
@@ -49,17 +87,36 @@ class StoryController extends Controller
 
     public function show(Story $story)
     {
-        return $story->load('author', 'genres', 'chapters');
+        return $story->load('author', 'genres', 'chapters')
+            ->loadCount('likes');
     }
 
     public function update(Request $request, Story $story)
     {
-        $story->update($request->only('title', 'description', 'genre_id'));
-        return $story;
+        if (Auth::id() !== $story->user_id) {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+        $validated = $request->validate([
+            'title' => 'sometimes|string|max:100',
+            'description' => 'nullable|string',
+            'genre_id' => 'nullable|array',
+            'genre_id.*' => 'exists:genres,id',
+        ]);
+        $story->update([
+            'title' => $validated['title'] ?? $story->title,
+            'description' => $validated['description'] ?? $story->description,
+        ]);
+        if (array_key_exists('genre_id', $validated)) {
+            $story->genres()->sync($validated['genre_id'] ?? []);
+        }
+        return $story->load('author', 'genres')->loadCount('likes');
     }
 
     public function destroy(Story $story)
     {
+        if (Auth::id() !== $story->user_id) {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
         $story->delete();
         return response()->json(['message' => 'Story deleted']);
     }

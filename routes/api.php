@@ -9,10 +9,14 @@ use App\Http\Controllers\{
     LikeController,
     FollowController
 };
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GenreController;
+use App\Http\Controllers\UserFollowController;
 
 // Rutas públicas
 Route::get('/stories', [StoryController::class, 'index']);
 Route::get('/stories/{story}', [StoryController::class, 'show']);
+Route::get('/genres', [GenreController::class, 'index']);
 
 Route::get('/users/{user}', [UserController::class, 'show']);
 Route::get('/users/{user}/stories', [UserController::class, 'stories']);
@@ -20,6 +24,8 @@ Route::get('/users/{user}/follows', [UserController::class, 'follows']);
 Route::get('/users/{user}/comments', [UserController::class, 'comments']);
 
 Route::get('/chapters/{chapter}', [ChapterController::class, 'show']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
 // Rutas protegidas por Sanctum (requieren usuario autenticado)
 //Route::middleware('auth:sanctum')->group(function () {
@@ -43,6 +49,8 @@ Route::get('/chapters/{chapter}', [ChapterController::class, 'show']);
 
     // Follows
     Route::post('/follows/toggle', [FollowController::class, 'toggle']);
+    Route::post('/users/{user}/follow/toggle', [UserFollowController::class, 'toggle']);
+    Route::get('/users/{user}/follow/status', [UserFollowController::class, 'status']);
 
     // Comments
     Route::post('/comments', [CommentController::class, 'store']);
