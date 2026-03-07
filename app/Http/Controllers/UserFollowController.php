@@ -11,7 +11,7 @@ class UserFollowController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:sanctum')->only(['toggle', 'status']);
+        $this->middleware('auth:sanctum')->only(['toggle']);
     }
 
     public function status(User $user)
