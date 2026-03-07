@@ -25,9 +25,12 @@ class AuthController extends Controller
             'rol' => 'user',
         ]);
 
+        $token = $user->createToken('web')->plainTextToken;
+
         return response()->json([
             'message' => 'Usuario registrado',
             'user' => $user,
+            'token' => $token,
         ], 201);
     }
 

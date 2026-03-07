@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Like;
+use App\Models\Story;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,6 +29,12 @@ class LikeController extends Controller
             'story_id' => 'required|exists:stories,id',
         ]);
 
+        // Evitar likes a historias propias
+        $authorId = Story::where('id', $request->story_id)->value('user_id');
+        if ($authorId && (int)$authorId === (int)$userId) {
+            return response()->json(['error' => 'No puedes dar me gusta a tu propia historia'], 422);
+        }
+
         // Buscar si ya existe un like del usuario en esa historia
         $like = Like::where('story_id', $request->story_id)
             ->where('user_id', $userId)
@@ -48,4 +55,3 @@ class LikeController extends Controller
         return response()->json(['liked' => true]);
     }
 }
-
