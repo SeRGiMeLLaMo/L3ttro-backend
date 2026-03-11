@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         // Crear usuarios de prueba
         $this->call([
             UserSeeder::class,
+            StorySeeder::class,
         ]);
 
 
