@@ -15,6 +15,8 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'description',
+        'photo',
     ];
 
     public function stories()

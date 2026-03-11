@@ -14,15 +14,17 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name' => 'Dev User',
-            'username' => 'devuser',
-            'email' => 'dev@test.com',
-            'password' => Hash::make('password'),
-            'description' => 'Usuario de desarrollo',
-            'rol' => 'admin',
-            'photo' => null,
-    ]);
+        User::updateOrCreate(
+            ['email' => 'dev@test.com'],
+            [
+                'name' => 'Dev User',
+                'username' => 'devuser',
+                'password' => Hash::make('password'),
+                'description' => 'Usuario de desarrollo',
+                'rol' => 'admin',
+                'photo' => null,
+            ]
+        );
 
      // Usuarios aleatorios usando factory
         User::factory()->count(5)->create();

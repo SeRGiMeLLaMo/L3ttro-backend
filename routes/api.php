@@ -28,7 +28,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 // Rutas protegidas por Sanctum (requieren usuario autenticado)
-//Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     // Perfil propio
     Route::get('/me', [UserController::class, 'me']);
     Route::put('/me', [UserController::class, 'update']);
@@ -54,4 +54,4 @@ Route::post('/login', [AuthController::class, 'login']);
 
     // Comments
     Route::post('/comments', [CommentController::class, 'store']);
-//});
+});
