@@ -12,14 +12,29 @@ class StorySeeder extends Seeder
      */
     public function run(): void
     {
-        // Generar 15 historias utilizando los usuarios existentes
-        \App\Models\Story::factory()
-            ->count(15)
-            ->create()
-            ->each(function ($story) {
-                // Asignar entre 1 y 3 géneros aleatorios
-                $genres = \App\Models\Genre::all()->random(rand(1, 3))->pluck('id');
-                $story->genres()->attach($genres);
-            });
+        $users = \App\Models\User::all();
+        $genres = \App\Models\Genre::all();
+
+        foreach ($users as $user) {
+            // Cada usuario tendrá 10 libros
+            \App\Models\Story::factory()
+                ->count(10)
+                ->create(['user_id' => $user->id])
+                ->each(function ($story) use ($genres) {
+                    // Asignar entre 1 y 3 géneros aleatorios
+                    $randomGenres = $genres->random(rand(1, 3))->pluck('id');
+                    $story->genres()->attach($randomGenres);
+
+                    // Cada libro tendrá entre 1 y 30 capítulos
+                    $numChapters = rand(1, 30);
+                    for ($i = 1; $i <= $numChapters; $i++) {
+                        \App\Models\Chapter::factory()->create([
+                            'story_id' => $story->id,
+                            'order' => $i,
+                            'title' => "Capítulo $i: " . \Illuminate\Support\Str::title(fake()->words(3, true)),
+                        ]);
+                    }
+                });
+        }
     }
 }

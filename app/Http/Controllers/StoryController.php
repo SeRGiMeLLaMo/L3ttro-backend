@@ -101,11 +101,21 @@ class StoryController extends Controller
             'description' => 'nullable|string',
             'genre_id' => 'nullable|array',
             'genre_id.*' => 'exists:genres,id',
+            'cover_image' => 'nullable|file|image|max:2048',
         ]);
-        $story->update([
+
+        $updateData = [
             'title' => $validated['title'] ?? $story->title,
             'description' => $validated['description'] ?? $story->description,
-        ]);
+        ];
+
+        if ($request->hasFile('cover_image')) {
+            $coverPath = $request->file('cover_image')->store('covers', 'public');
+            $updateData['cover_image'] = $coverPath;
+        }
+
+        $story->update($updateData);
+
         if (array_key_exists('genre_id', $validated)) {
             $story->genres()->sync($validated['genre_id'] ?? []);
         }
