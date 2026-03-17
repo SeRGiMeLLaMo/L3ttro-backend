@@ -65,27 +65,34 @@ class UserController extends Controller
     // Actualizar perfil
     public function update(Request $request)
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         if (!$user) {
             return response()->json(['error' => 'No autenticado'], 401);
         }
-        dd(get_class($user)); // Esto te dirá qué tipo de objeto es $user. Si $user es null, entonces update() obviamente no existe → error.
 
-    $validated = $request->validate([
-        'name' => 'sometimes|required|string|max:255',
-        'email' => 'sometimes|required|email|unique:users,email,' . $user->id,
-        'password' => 'nullable|min:6|confirmed',
-    ]);
+        $validated = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6|confirmed',
+            'description' => 'nullable|string|max:1000',
+            'photo' => 'nullable|image|max:2048',
+        ]);
 
-    if (!empty($validated['password'])) {
-        $validated['password'] = Hash::make($validated['password']);
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        }
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('profiles', 'public');
+            $validated['photo'] = $path;
+        }
+
+        $user->update($validated);
+
+        return response()->json($user);
     }
-
-    $user->update($validated);
-
-    return response()->json($user);
-}
 
     // Eliminar cuenta
   public function destroy()
