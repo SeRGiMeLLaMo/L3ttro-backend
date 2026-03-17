@@ -16,6 +16,13 @@ class ChapterController extends Controller
             'order' => 'nullable|integer',
         ]);
 
+        // Si no se proporciona el orden, calcularlo automáticamente
+        if (!isset($validated['order'])) {
+            $lastOrder = Chapter::where('story_id', $validated['story_id'])
+                ->max('order');
+            $validated['order'] = ($lastOrder ?? 0) + 1;
+        }
+
         return Chapter::create($validated);
     }
 
