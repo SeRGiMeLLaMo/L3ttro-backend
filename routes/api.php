@@ -27,6 +27,8 @@ Route::get('/chapters/{chapter}', [ChapterController::class, 'show']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/users/{user}/follow/status', [UserFollowController::class, 'status']);
+
 // Rutas protegidas por Sanctum (requieren usuario autenticado)
 Route::middleware('auth:sanctum')->group(function () {
     // Perfil propio
@@ -50,7 +52,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Follows
     Route::post('/follows/toggle', [FollowController::class, 'toggle']);
     Route::post('/users/{user}/follow/toggle', [UserFollowController::class, 'toggle']);
-    Route::get('/users/{user}/follow/status', [UserFollowController::class, 'status']);
 
     // Comments
     Route::post('/comments', [CommentController::class, 'store']);
