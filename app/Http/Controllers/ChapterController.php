@@ -40,7 +40,9 @@ class ChapterController extends Controller
 
     public function show(Chapter $chapter)
     {
-        return $chapter->load('story');
+        return $chapter->load(['story.chapters' => function($q) {
+            $q->orderBy('order', 'asc');
+        }]);
     }
 
     public function update(Request $request, Chapter $chapter)

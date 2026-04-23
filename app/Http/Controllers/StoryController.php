@@ -57,13 +57,13 @@ class StoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required |string|max:100',
+            'title' => 'required|string|max:100',
             'description' => 'nullable|string',
             // Géneros opcionales, se pueden enviar como genre_id[] en el formulario
             'genre_id' => 'nullable|array',
             'genre_id.*' => 'exists:genres,id',
             // La portada se envía como archivo (FormData), no como string
-            'cover_image' => 'nullable|file|image|max:2048',
+            'cover_image' => 'nullable|file|image|max:10240',
         ]);
 
         // Guardar imagen si viene
