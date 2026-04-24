@@ -26,6 +26,7 @@ Route::get('/users/{user}/comments', [UserController::class, 'comments']);
 Route::get('/chapters/{chapter}', [ChapterController::class, 'show']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'loginWithGoogle']);
 
 Route::get('/users/{user}/follow/status', [UserFollowController::class, 'status']);
 
