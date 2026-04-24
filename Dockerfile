@@ -23,8 +23,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Since this is a dev environment, we assume the code is volume mounted.
-# No need to copy code or run composer install in the Dockerfile itself,
-# except for the initial setup.
+# Copy application files
+COPY . .
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Set permissions for Laravel
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 EXPOSE 80
+
