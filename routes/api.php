@@ -17,8 +17,7 @@ use App\Http\Controllers\UserFollowController;
 Route::get('/ping', function() { return 'pong'; });
 
 // Rutas públicas
-Route::get('/stories', function() { return 'SÍ ESTOY ACTUALIZADO'; });
-Route::get('/stories-real', [StoryController::class, 'index']); // Movemos la original
+Route::get('/stories', [StoryController::class, 'index']);
 Route::get('/stories/{story}', [StoryController::class, 'show']);
 Route::get('/genres', [GenreController::class, 'index']);
 
