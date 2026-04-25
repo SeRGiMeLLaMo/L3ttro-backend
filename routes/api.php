@@ -1,4 +1,5 @@
 <?php
+// Route for private library feature
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
