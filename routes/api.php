@@ -14,6 +14,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\UserFollowController;
 
+Route::get('/ping', function() { return 'pong'; });
+
 // Rutas públicas
 Route::get('/stories', [StoryController::class, 'index']);
 Route::get('/stories/{story}', [StoryController::class, 'show']);
