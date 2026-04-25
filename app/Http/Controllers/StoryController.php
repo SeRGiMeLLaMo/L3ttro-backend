@@ -85,15 +85,19 @@ class StoryController extends Controller
         return $story->load('author', 'genres');
     }
 
-    public function show(Story $story)
+    public function show(Request $request, Story $story)
     {
         $story->load(['author', 'genres', 'chapters'])->loadCount('likes');
         
-        // Añadir si el usuario autenticado le ha dado like
+        // Identificación manual del usuario para rutas públicas (opcional)
         $story->liked = false;
-        $user = Auth::guard('sanctum')->user();
-        if ($user) {
-            $story->liked = $story->likes()->where('user_id', $user->id)->exists();
+        $token = $request->bearerToken();
+        if ($token) {
+            $accessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
+            if ($accessToken && $accessToken->tokenable) {
+                $user = $accessToken->tokenable;
+                $story->liked = $story->likes()->where('user_id', $user->id)->exists();
+            }
         }
 
         return $story;
