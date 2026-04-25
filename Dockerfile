@@ -8,8 +8,6 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     git \
-    nodejs \
-    npm \
     && docker-php-ext-install pdo_pgsql pgsql zip gd
 
 # Enable Apache mod_rewrite for Laravel routing

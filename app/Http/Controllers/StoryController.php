@@ -85,10 +85,22 @@ class StoryController extends Controller
         return $story->load('author', 'genres');
     }
 
-    public function show(Story $story)
+    public function show(Request $request, Story $story)
     {
-        return $story->load('author', 'genres', 'chapters')
-            ->loadCount('likes');
+        $story->load(['author', 'genres', 'chapters'])->loadCount('likes');
+        
+        // Identificación manual del usuario para rutas públicas (opcional)
+        $story->liked = false;
+        $token = $request->bearerToken();
+        if ($token) {
+            $accessToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
+            if ($accessToken && $accessToken->tokenable) {
+                $user = $accessToken->tokenable;
+                $story->liked = $story->likes()->where('user_id', $user->id)->exists();
+            }
+        }
+
+        return $story;
     }
 
     public function update(Request $request, Story $story)
