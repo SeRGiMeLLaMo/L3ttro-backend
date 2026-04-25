@@ -87,8 +87,15 @@ class StoryController extends Controller
 
     public function show(Story $story)
     {
-        return $story->load('author', 'genres', 'chapters')
-            ->loadCount('likes');
+        $story->load(['author', 'genres', 'chapters'])->loadCount('likes');
+        
+        // Añadir si el usuario autenticado le ha dado like
+        $story->liked = false;
+        if (Auth::guard('sanctum')->check()) {
+            $story->liked = $story->likes()->where('user_id', Auth::guard('sanctum')->id())->exists();
+        }
+
+        return $story;
     }
 
     public function update(Request $request, Story $story)
