@@ -61,6 +61,21 @@ class UserController extends Controller
             ->with(['story', 'chapter'])
             ->get();
     }
+    // Stories a las que el usuario ha dado like (Guardadas)
+    public function likedStories()
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['error' => 'No autenticado'], 401);
+        }
+
+        return $user->likes()
+            ->with(['story.genres', 'story.author'])
+            ->get()
+            ->pluck('story');
+    }
 
     // Actualizar perfil
     public function update(Request $request)

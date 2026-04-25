@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [UserController::class, 'me']);
     Route::put('/me', [UserController::class, 'update']);
     Route::delete('/me', [UserController::class, 'destroy']);
+    Route::get('/me/liked-stories', [UserController::class, 'likedStories']);
 
     // Stories
     Route::post('/stories', [StoryController::class, 'store']);
