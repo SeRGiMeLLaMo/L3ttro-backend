@@ -91,8 +91,9 @@ class StoryController extends Controller
         
         // Añadir si el usuario autenticado le ha dado like
         $story->liked = false;
-        if (Auth::guard('sanctum')->check()) {
-            $story->liked = $story->likes()->where('user_id', Auth::guard('sanctum')->id())->exists();
+        $user = Auth::guard('sanctum')->user();
+        if ($user) {
+            $story->liked = $story->likes()->where('user_id', $user->id)->exists();
         }
 
         return $story;
