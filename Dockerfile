@@ -27,6 +27,10 @@ COPY . .
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
+# Run migrations (ensure database is up to date)
+# Note: In production, it's better to run this in a start script, but for now we'll add it here or remind user.
+# Actually, Render's build doesn't have the DB connection. We'll add it to a start script if they have one.
+
 # Create storage link
 RUN php artisan storage:link --force
 

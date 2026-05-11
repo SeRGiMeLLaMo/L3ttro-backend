@@ -35,10 +35,11 @@ class GoogleController extends Controller
         $user = User::where('email', $googleUser['email'])->first();
 
         if ($user) {
-            // Update google_id if not present
-            if (!$user->google_id) {
-                $user->update(['google_id' => $googleUser['sub']]);
-            }
+            // Update google_id and google_photo from Google
+            $user->update([
+                'google_id' => $googleUser['sub'],
+                'google_photo' => $googleUser['picture'] ?? $user->google_photo
+            ]);
         } else {
             // Create new user
             $user = User::create([
@@ -47,6 +48,7 @@ class GoogleController extends Controller
                 'google_id' => $googleUser['sub'],
                 'username' => strtolower($googleUser['given_name']) . rand(100, 999),
                 'photo' => $googleUser['picture'] ?? null,
+                'google_photo' => $googleUser['picture'] ?? null,
                 'email_verified_at' => now(),
             ]);
         }
