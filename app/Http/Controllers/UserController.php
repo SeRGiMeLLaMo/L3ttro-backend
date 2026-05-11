@@ -14,20 +14,29 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-    if (!$user) {
-        return response()->json(['error' => 'No autenticado'], 401);
-    }
+        if (!$user) {
+            return response()->json(['error' => 'No autenticado'], 401);
+        }
 
-    return User::with([
-        'stories.genres',
-        'stories.author',
-    ])->findOrFail($user->id);
+        /** @var \App\Models\User $user */
+        $user = User::with(['stories.genres', 'stories.author'])->findOrFail($user->id);
+
+        // Lógica Inteligente de Foto
+        if ($user->photo && !str_starts_with($user->photo, 'http')) {
+            if (!file_exists(storage_path('app/public/' . $user->photo))) {
+                if ($user->google_photo) {
+                    $user->photo = $user->google_photo;
+                }
+            }
+        }
+
+        return $user;
     }
 
     // Perfil público
     public function show(User $user)
     {
-        return $user->load([
+        $user->load([
             'stories' => function ($q) {
                 $q->withCount('likes');
             },
@@ -35,6 +44,17 @@ class UserController extends Controller
             'stories.author',
             'stories.chapters',
         ])->loadCount('followers');
+
+        // Lógica Inteligente de Foto
+        if ($user->photo && !str_starts_with($user->photo, 'http')) {
+            if (!file_exists(storage_path('app/public/' . $user->photo))) {
+                if ($user->google_photo) {
+                    $user->photo = $user->google_photo;
+                }
+            }
+        }
+
+        return $user;
     }
 
     // Stories creadas por el usuario
