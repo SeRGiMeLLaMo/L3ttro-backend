@@ -6,7 +6,12 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => [
+        'http://localhost:5173',
+        'https://lettro-frontend.vercel.app',
+        'https://lettro-frontend-95kcx6vst-sergimellamos-projects.vercel.app',
+        'https://lettro-frontend-mmamofwxv-sergimellamos-projects.vercel.app',
+    ],
 
     'allowed_origins_patterns' => [],
 
