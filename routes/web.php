@@ -19,14 +19,25 @@ Route::get('/migrar-base-de-datos', function() {
 // RUTA NUCLEAR: Borra todo, migra de nuevo y mete los datos de prueba (seeds)
 Route::get('/reset-total', function() {
     try {
-        // Migramos desde cero con migrate:fresh (borra y recrea todo limpio)
-        \Illuminate\Support\Facades\Artisan::call('migrate:fresh', [
-            '--seed'  => true,
-            '--force' => true,
-        ]);
-        return '¡ÉXITO TOTAL! Base de datos borrada y recreada desde cero con datos de prueba: <br><pre>' . \Illuminate\Support\Facades\Artisan::output() . '</pre>';
+        $db = \Illuminate\Support\Facades\DB::class;
+
+        // 1. Borrar y recrear el esquema entero (evita problemas de FK con DROP TABLE)
+        $db::statement('DROP SCHEMA public CASCADE');
+        $db::statement('CREATE SCHEMA public');
+        $db::statement('GRANT ALL ON SCHEMA public TO neondb_owner');
+        $db::statement('GRANT ALL ON SCHEMA public TO public');
+
+        // 2. Migrar (sin fresh, el esquema ya está vacío)
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        $migrateOutput = \Illuminate\Support\Facades\Artisan::output();
+
+        // 3. Seeds
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        $seedOutput = \Illuminate\Support\Facades\Artisan::output();
+
+        return '¡ÉXITO TOTAL!<br><pre>' . $migrateOutput . $seedOutput . '</pre>';
     } catch (\Exception $e) {
-        return 'Error al resetear la base de datos: ' . $e->getMessage();
+        return 'Error al resetear: ' . $e->getMessage();
     }
 });
 
