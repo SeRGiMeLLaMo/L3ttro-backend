@@ -126,6 +126,8 @@ class UserController extends Controller
 
         $user->update($validated);
 
+        $user->refresh();
+
         return response()->json($user);
     }
 
