@@ -8,9 +8,9 @@ return [
 
     'allowed_origins' => [
         'http://localhost:5173',
+        'https://l3ttro.vercel.app',
         'https://lettro-frontend.vercel.app',
-        'https://lettro-frontend-95kcx6vst-sergimellamos-projects.vercel.app',
-        'https://lettro-frontend-mmamofwxv-sergimellamos-projects.vercel.app',
+        env('FRONTEND_URL', 'https://l3ttro.vercel.app'),
     ],
 
     'allowed_origins_patterns' => [],
