@@ -96,6 +96,9 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => 'require',
+            'options' => [
+                'endpoint' => 'ep-odd-dream-aqicokcz-pooler'
+            ],
         ],
 
         'sqlsrv' => [
