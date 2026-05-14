@@ -2,39 +2,58 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Story;
+use App\Models\Chapter;
+use App\Models\Genre;
+use App\Models\User;
 
 class StorySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $users = \App\Models\User::all();
-        $genres = \App\Models\Genre::all();
+        $users  = User::all();
+        $genres = Genre::all();
+
+        $stories = [
+            ['title' => 'El último horizonte',    'synopsis' => 'Una aventura épica al fin del mundo.'],
+            ['title' => 'Sombras del pasado',      'synopsis' => 'Un detective descubre secretos oscuros.'],
+            ['title' => 'La ciudad de cristal',    'synopsis' => 'Un mundo futurista lleno de peligros.'],
+            ['title' => 'Entre líneas',            'synopsis' => 'El amor y la literatura se entrelazan.'],
+            ['title' => 'El bosque eterno',        'synopsis' => 'Una joven entra a un bosque mágico.'],
+            ['title' => 'Voces del abismo',        'synopsis' => 'Un explorador escucha voces inexplicables.'],
+            ['title' => 'La herencia olvidada',    'synopsis' => 'Una familia guarda un secreto centenario.'],
+            ['title' => 'Destino incierto',        'synopsis' => 'Dos extraños con un pasado en común.'],
+            ['title' => 'El código roto',          'synopsis' => 'Un hacker descubre una conspiración global.'],
+            ['title' => 'Más allá del tiempo',     'synopsis' => 'Un viajero regresa al pasado para salvar el futuro.'],
+        ];
 
         foreach ($users as $user) {
-            // Cada usuario tendrá 10 libros
-            \App\Models\Story::factory()
-                ->count(10)
-                ->create(['user_id' => $user->id])
-                ->each(function ($story) use ($genres) {
-                    // Asignar entre 1 y 3 géneros aleatorios
-                    $randomGenres = $genres->random(rand(1, 3))->pluck('id');
-                    $story->genres()->attach($randomGenres);
+            foreach ($stories as $storyData) {
+                $story = Story::create([
+                    'title'    => $storyData['title'],
+                    'synopsis' => $storyData['synopsis'],
+                    'user_id'  => $user->id,
+                    'cover'    => null,
+                ]);
 
-                    // Cada libro tendrá entre 1 y 30 capítulos
-                    $numChapters = rand(1, 30);
-                    for ($i = 1; $i <= $numChapters; $i++) {
-                        \App\Models\Chapter::factory()->create([
-                            'story_id' => $story->id,
-                            'order' => $i,
-                            'title' => "Capítulo $i: " . \Illuminate\Support\Str::title(fake()->words(3, true)),
-                        ]);
-                    }
-                });
+                // Asignar géneros aleatorios
+                if ($genres->count() > 0) {
+                    $story->genres()->attach(
+                        $genres->random(min(2, $genres->count()))->pluck('id')
+                    );
+                }
+
+                // Crear 3 capítulos por historia
+                for ($i = 1; $i <= 3; $i++) {
+                    Chapter::create([
+                        'story_id' => $story->id,
+                        'order'    => $i,
+                        'title'    => "Capítulo $i",
+                        'content'  => "Contenido del capítulo $i de {$storyData['title']}.",
+                    ]);
+                }
+            }
         }
     }
 }
